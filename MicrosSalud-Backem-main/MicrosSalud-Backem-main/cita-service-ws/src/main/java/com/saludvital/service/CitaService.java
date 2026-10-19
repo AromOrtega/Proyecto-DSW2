@@ -13,7 +13,7 @@ import com.saludvital.dto.CitaDTO;
 import com.saludvital.dto.CitaRequest;
 import com.saludvital.enums.EstadoCita;
 import com.saludvital.messaging.CitaEventPublisher;
-import com.saludvital.respository.CitaRepository;
+import com.saludvital.repository.CitaRepository;
 
 import jakarta.transaction.Transactional;
 

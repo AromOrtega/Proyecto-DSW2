@@ -49,7 +49,7 @@ Desde cada carpeta: mvn spring-boot:run
 | 7 | notificaciones-service-ws | 8091 | notificaciones-service-ws |
 | 8 | cita-service-ws | 8010 | cita-service-ws |
 | 9 | reportes-service-ws | 8090 | reportes-service-ws |
-| 10 | api-gateway | 8080 | api-gateway |
+| 10 | api-gateway | 8001 | api-gateway |
 
 ## 6. Verificar
 ```powershell

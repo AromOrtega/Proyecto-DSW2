@@ -52,13 +52,13 @@ Base de datos: salud  ← se crea automáticamente al arrancar
 > `auth-service-ws/src/main/resources/application.properties`
 > y en todos los archivos de `config-server/config-repo/*.properties`
 
-### Arquitectura – Todos los requests van por el puerto 8080
+### Arquitectura – Todos los requests van por el puerto 8001
 
 ```
   POSTMAN
      │
      ▼
- :8080  API Gateway  ← ¡Siempre apunta aquí!
+ :8001  API Gateway  ← ¡Siempre apunta aquí!
      │
      ├─ /api/auth/**          → Auth Service       :8083
      ├─ /api/medicos/**       → Médico Service     :8082
@@ -78,7 +78,7 @@ Base de datos: salud  ← se crea automáticamente al arrancar
 ```
 1️⃣  Config Server      (puerto 8888)  ← PRIMERO siempre
 2️⃣  Eureka Server      (puerto 8761)  ← SEGUNDO siempre
-3️⃣  API Gateway        (puerto 8080)
+3️⃣  API Gateway        (puerto 8001)
 4️⃣  Auth Service       (puerto 8083)
 5️⃣  Médicos Service    (puerto 8082)
 6️⃣  Pacientes Service  (puerto 8086)
@@ -128,7 +128,7 @@ La colección usa **2 variables propias** (no necesitas crear un entorno separad
 
 | Variable | Valor por defecto | Descripción |
 |---|---|---|
-| `base_url` | `http://localhost:8080` | URL base del API Gateway |
+| `base_url` | `http://localhost:8001` | URL base del API Gateway |
 | `token` | *(vacío)* | JWT — se llena **automáticamente** al hacer Login |
 
 ### Cómo verificar / editar las variables
@@ -136,7 +136,7 @@ La colección usa **2 variables propias** (no necesitas crear un entorno separad
 1. En el panel izquierdo, haz clic derecho sobre **"SaludVital – Microservicios"**
 2. Selecciona **"Edit"**
 3. Ve a la pestaña **"Variables"**
-4. Confirma que `base_url` = `http://localhost:8080`
+4. Confirma que `base_url` = `http://localhost:8001`
 
 > 💡 **El token se guarda solo.** El request **Login** tiene un script automático que extrae el JWT de la respuesta y lo guarda en `{{token}}`. No tienes que copiarlo manualmente.
 
@@ -434,7 +434,7 @@ Para ver una cita específica:
 
 ## 6. Documentación Completa de Endpoints
 
-### 🔐 Auth Service — `http://localhost:8080/api/auth`
+### 🔐 Auth Service — `http://localhost:8001/api/auth`
 
 | Método | Endpoint | Auth | Descripción |
 |---|---|---|---|
@@ -444,7 +444,7 @@ Para ver una cita específica:
 
 ---
 
-### 👨‍⚕️ Médicos Service — `http://localhost:8080/api/medicos`
+### 👨‍⚕️ Médicos Service — `http://localhost:8001/api/medicos`
 
 > Requiere rol **ADMIN** para POST, PUT, DELETE. GET disponible para todos los roles autenticados.
 
@@ -474,7 +474,7 @@ Para ver una cita específica:
 
 ---
 
-### 🧑 Pacientes Service — `http://localhost:8080/api/pacientes`
+### 🧑 Pacientes Service — `http://localhost:8001/api/pacientes`
 
 > Requiere rol **ADMIN** para POST, PUT, DELETE. GET disponible para todos los roles autenticados.
 
@@ -488,7 +488,7 @@ Para ver una cita específica:
 
 ---
 
-### 💊 Medicamentos Service — `http://localhost:8080/api/medicamentos`
+### 💊 Medicamentos Service — `http://localhost:8001/api/medicamentos`
 
 > Requiere rol **ADMIN** para POST, PUT, DELETE.
 
@@ -503,7 +503,7 @@ Para ver una cita específica:
 
 ---
 
-### 📅 Citas Service — `http://localhost:8080/api/citas`
+### 📅 Citas Service — `http://localhost:8001/api/citas`
 
 > Pacientes pueden crear citas. Médicos pueden ver sus citas. Admin tiene acceso total.
 
@@ -517,7 +517,7 @@ Para ver una cita específica:
 
 ---
 
-### 🔔 Notificaciones Service — `http://localhost:8080/api/notificaciones`
+### 🔔 Notificaciones Service — `http://localhost:8001/api/notificaciones`
 
 | Método | Endpoint | Descripción |
 |---|---|---|
@@ -564,7 +564,7 @@ PENDIENTE    CONFIRMADA    CANCELADA    COMPLETADA
 Puedes verificar que un servicio esté vivo con peticiones GET directas (sin token):
 
 ```
-GET http://localhost:8080/actuator/health    ← API Gateway
+GET http://localhost:8001/actuator/health    ← API Gateway
 GET http://localhost:8083/actuator/health    ← Auth Service
 GET http://localhost:8082/actuator/health    ← Médicos Service
 GET http://localhost:8086/actuator/health    ← Pacientes Service

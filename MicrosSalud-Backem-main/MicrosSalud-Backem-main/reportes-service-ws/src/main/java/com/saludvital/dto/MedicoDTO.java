@@ -10,5 +10,8 @@ public class MedicoDTO {
     private String nombre;
     private String apellido;
     private String especialidad;
+    private String numeroLicencia;
     private String email;
+    private String telefono;
+    private String estado;
 }

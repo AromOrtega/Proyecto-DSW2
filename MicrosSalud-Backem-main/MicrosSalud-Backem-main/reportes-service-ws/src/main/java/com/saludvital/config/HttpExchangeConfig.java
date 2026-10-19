@@ -1,6 +1,7 @@
 package com.saludvital.config;
 
 import com.saludvital.client.CitaClient;
+import com.saludvital.client.MedicamentoClient;
 import com.saludvital.client.MedicoClient;
 import com.saludvital.client.PacienteClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -48,5 +49,14 @@ public class HttpExchangeConfig {
                 .builderFor(RestClientAdapter.create(restClient))
                 .build()
                 .createClient(PacienteClient.class);
+    }
+
+    @Bean
+    public MedicamentoClient medicamentoClient(RestClient.Builder builder) {
+        RestClient restClient = builder.baseUrl("http://gestion-medicamentos-ws").build();
+        return HttpServiceProxyFactory
+                .builderFor(RestClientAdapter.create(restClient))
+                .build()
+                .createClient(MedicamentoClient.class);
     }
 }

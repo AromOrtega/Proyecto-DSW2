@@ -16,7 +16,8 @@ public class NotificacionPublisher {
 
     private static final Logger log = LoggerFactory.getLogger(NotificacionPublisher.class);
     private final RabbitTemplate rabbitTemplate;
-    public static final String EXCHANGE = "saludvital.events";
+    public static final String EXCHANGE = "salud.exchange";
+    public static final String ROUTING_KEY = "notificacion.enviada";
 
     public NotificacionPublisher(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
@@ -34,7 +35,7 @@ public class NotificacionPublisher {
         evento.put("correlationId", MDC.get("correlationId"));
 
         try {
-            rabbitTemplate.convertAndSend(EXCHANGE, "notificaciones.envio", evento);
+            rabbitTemplate.convertAndSend(EXCHANGE, ROUTING_KEY, evento);
             log.info("[RabbitMQ] Notificacion enviada a cola: {}", destinatario);
         } catch (Exception e) {
             log.error("[RabbitMQ] Error enviando notificacion: {}", e.getMessage());

@@ -2,13 +2,13 @@
     "info": {
         "_postman_id": "saludvital-micros-collection",
         "name": "SaludVital – Microservicios",
-        "description": "Colección completa de endpoints para el proyecto SaludVital. Todos los requests pasan por el API Gateway en http://localhost:8080.\n\n**Flujo recomendado de prueba:**\n1. Registrar un usuario (paciente o médico)\n2. Hacer login y copiar el token JWT\n3. Pegar el token en la variable `{{token}}` del entorno\n4. Usar el resto de endpoints con el header Authorization: Bearer {{token}}",
+        "description": "Colección completa de endpoints para el proyecto SaludVital. Todos los requests pasan por el API Gateway en http://localhost:8001.\n\n**Flujo recomendado de prueba:**\n1. Registrar un usuario (paciente o médico)\n2. Hacer login y copiar el token JWT\n3. Pegar el token en la variable `{{token}}` del entorno\n4. Usar el resto de endpoints con el header Authorization: Bearer {{token}}",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "variable": [
         {
             "key": "base_url",
-            "value": "http://localhost:8080",
+            "value": "http://localhost:8001",
             "type": "string",
             "description": "URL base del API Gateway"
         },

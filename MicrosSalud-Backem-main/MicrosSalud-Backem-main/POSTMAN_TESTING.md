@@ -54,7 +54,7 @@ Base de datos: salud (se crea automáticamente si no existe)
 
 ## 🗺️ Arquitectura y Puertos
 
-Todos los requests de Postman deben apuntar al **API Gateway** en el puerto `8080`.  
+Todos los requests de Postman deben apuntar al **API Gateway** en el puerto `8001`.  
 El gateway enruta automáticamente a cada microservicio interno.
 
 ```
@@ -62,7 +62,7 @@ El gateway enruta automáticamente a cada microservicio interno.
                          │              POSTMAN / CLIENTE                      │
                          └────────────────────────┬────────────────────────────┘
                                                   │
-                                          :8080 (API Gateway)
+                                          :8001 (API Gateway)
                                                   │
                          ┌────────────────────────▼────────────────────────────┐
                          │              API GATEWAY                             │
@@ -82,7 +82,7 @@ El gateway enruta automáticamente a cada microservicio interno.
 |---|---|---|---|
 | **Config Server** | `config-server-ws` | **8888** | *(no expuesto en gateway)* |
 | **Eureka Server** | `eureka-server` | **8761** | *(no expuesto en gateway)* |
-| **API Gateway** | `api-gateway` | **8080** | ← **Siempre usar este** |
+| **API Gateway** | `api-gateway` | **8001** | ← **Siempre usar este** |
 | **Auth Service** | `auth-service-ws` | **8083** | `/api/auth/**` |
 | **Médicos Service** | `medico-service-ws` | **8082** | `/api/medicos/**` |
 | **Pacientes Service** | `paciente-service-ws` | **8086** | `/api/pacientes/**` |
@@ -129,7 +129,7 @@ La colección usa **variables de nivel colección** (no necesitas un entorno sep
 
 | Variable | Valor por defecto | Descripción |
 |---|---|---|
-| `base_url` | `http://localhost:8080` | URL base — API Gateway |
+| `base_url` | `http://localhost:8001` | URL base — API Gateway |
 | `token` | *(vacío)* | JWT — se llena automáticamente al hacer Login |
 
 > 💡 El request **Login** tiene un **script de Test** que extrae el JWT y lo guarda en `{{token}}` automáticamente. No necesitas copiarlo a mano.
@@ -143,7 +143,7 @@ La colección usa **variables de nivel colección** (no necesitas un entorno sep
 ```
 1️⃣  Config Server     (puerto 8888) — debe ser el primero
 2️⃣  Eureka Server     (puerto 8761) — debe ser el segundo
-3️⃣  API Gateway       (puerto 8080)
+3️⃣  API Gateway       (puerto 8001)
 4️⃣  Auth Service      (puerto 8083)
 5️⃣  Médicos Service   (puerto 8082)
 6️⃣  Pacientes Service (puerto 8086)
@@ -163,36 +163,36 @@ Verifica que todos estén registrados en: http://localhost:8761
 ### Paso 1 – Registrar un Paciente
 
 ```
-POST http://localhost:8080/api/auth/register
+POST http://localhost:8001/api/auth/register
 ```
 Registra un usuario con rol `paciente`. Esto crea tanto el `User` (credenciales) como el `Paciente` (perfil) automáticamente.
 
 ### Paso 2 – Registrar un Médico
 
 ```
-POST http://localhost:8080/api/auth/register
+POST http://localhost:8001/api/auth/register
 ```
 Usa `"role": ["medico"]`. Crea el `User` + el perfil `Medico` con estado `ACTIVO`.
 
 ### Paso 3 – Login y obtener JWT
 
 ```
-POST http://localhost:8080/api/auth/login
+POST http://localhost:8001/api/auth/login
 ```
 El script de Postman captura el `token` del response y lo guarda en `{{token}}`. Desde este punto, **todos los requests usan el header `Authorization: Bearer {{token}}`** automáticamente.
 
 ### Paso 4 – Consultar datos creados
 
 ```
-GET http://localhost:8080/api/pacientes       → Copiar el ID del paciente creado
-GET http://localhost:8080/api/medicos         → Copiar el ID del médico creado
-GET http://localhost:8080/api/medicamentos    → Ver medicamentos disponibles
+GET http://localhost:8001/api/pacientes       → Copiar el ID del paciente creado
+GET http://localhost:8001/api/medicos         → Copiar el ID del médico creado
+GET http://localhost:8001/api/medicamentos    → Ver medicamentos disponibles
 ```
 
 ### Paso 5 – Crear una Cita
 
 ```
-POST http://localhost:8080/api/citas
+POST http://localhost:8001/api/citas
 ```
 Usa los IDs del paciente y médico obtenidos en el paso anterior.
 
@@ -206,7 +206,7 @@ Al crear la cita, el `cita-service` publica un evento al exchange `salud.exchang
 
 ### 🔐 Auth Service – Port 8083
 
-**Base path en gateway:** `http://localhost:8080/api/auth`
+**Base path en gateway:** `http://localhost:8001/api/auth`
 
 ---
 
@@ -315,7 +315,7 @@ Authorization: Bearer {{token}}
 
 ### 👨‍⚕️ Médicos Service – Port 8082
 
-**Base path en gateway:** `http://localhost:8080/api/medicos`
+**Base path en gateway:** `http://localhost:8001/api/medicos`
 
 > 🔒 **Control de acceso:**
 > | Método | Requiere |
@@ -491,7 +491,7 @@ Misma estructura que POST (campos opcionales, solo se actualiza lo que se envía
 
 ### 🧑 Pacientes Service – Port 8086
 
-**Base path en gateway:** `http://localhost:8080/api/pacientes`  
+**Base path en gateway:** `http://localhost:8001/api/pacientes`  
 **Header requerido en todos:** `Authorization: Bearer {{token}}`
 
 ---
@@ -542,7 +542,7 @@ Misma estructura que POST.
 
 ### 💊 Medicamentos Service – Port 8081
 
-**Base path en gateway:** `http://localhost:8080/api/medicamentos`  
+**Base path en gateway:** `http://localhost:8001/api/medicamentos`  
 **Header requerido en todos:** `Authorization: Bearer {{token}}`
 
 ---
@@ -595,7 +595,7 @@ Misma estructura que POST.
 
 ### 📅 Citas Service – Port 8010
 
-**Base path en gateway:** `http://localhost:8080/api/citas`  
+**Base path en gateway:** `http://localhost:8001/api/citas`  
 **Header requerido en todos:** `Authorization: Bearer {{token}}`
 
 > ⚡ Al crear o actualizar una cita, se publica un evento en RabbitMQ:  
@@ -651,7 +651,7 @@ Misma estructura que POST (todos los campos requeridos también en actualizació
 
 ### 🔔 Notificaciones Service – Port 8091
 
-**Base path en gateway:** `http://localhost:8080/api/notificaciones`  
+**Base path en gateway:** `http://localhost:8001/api/notificaciones`  
 **Header requerido:** `Authorization: Bearer {{token}}`
 
 > ℹ️ Este servicio recibe eventos de RabbitMQ automáticamente. Usa este endpoint para disparar notificaciones manuales (pruebas).
@@ -740,7 +740,7 @@ GET http://localhost:{puerto}/actuator/prometheus   ← métricas para Grafana
 ### Ejemplos rápidos
 
 ```
-GET http://localhost:8080/actuator/health    ← API Gateway
+GET http://localhost:8001/actuator/health    ← API Gateway
 GET http://localhost:8083/actuator/health    ← Auth Service (directo, sin gateway)
 GET http://localhost:8082/actuator/health    ← Médicos Service (directo)
 GET http://localhost:8086/actuator/health    ← Pacientes Service (directo)

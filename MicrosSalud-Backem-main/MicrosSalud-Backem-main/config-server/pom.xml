@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	
-	<groupId>org.cibertec.edusphere</groupId>
+	<groupId>com.saludvital</groupId>
 	<artifactId>config-server</artifactId>
 	<version>1.0.0</version>
 	<name>config-server</name>

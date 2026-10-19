@@ -8,7 +8,7 @@
 		<version>3.5.10</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>org.cibertec.edusphere</groupId>
+	<groupId>com.saludvital</groupId>
 	<artifactId>eureka-server</artifactId>
 	<version>1.0.0</version>
 	<name>eureka-server</name>

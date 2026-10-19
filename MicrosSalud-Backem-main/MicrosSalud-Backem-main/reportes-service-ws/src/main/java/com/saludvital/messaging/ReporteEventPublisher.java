@@ -26,7 +26,12 @@ public class ReporteEventPublisher {
     public void publicarReporteGenerado(String tipoReporte) {
         EventoReporte evento = new EventoReporte("REPORTE_GENERADO", tipoReporte, System.currentTimeMillis());
         log.info("📤 Publicando evento RabbitMQ — routingKey={} payload={}", routingKey, evento);
-        rabbitTemplate.convertAndSend(exchange, routingKey, evento);
+        try {
+            rabbitTemplate.convertAndSend(exchange, routingKey, evento);
+        } catch (Exception e) {
+            // El reporte se entrega igual aunque RabbitMQ no este disponible
+            log.error("[RabbitMQ] No se pudo publicar el evento de reporte: {}", e.getMessage());
+        }
     }
 
     public record EventoReporte(String accion, String tipoReporte, long timestamp) {
