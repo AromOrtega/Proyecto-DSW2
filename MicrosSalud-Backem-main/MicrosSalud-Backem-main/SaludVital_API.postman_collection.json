@@ -1,0 +1,844 @@
+{
+    "info": {
+        "_postman_id": "saludvital-micros-collection",
+        "name": "SaludVital – Microservicios",
+        "description": "Colección completa de endpoints para el proyecto SaludVital. Todos los requests pasan por el API Gateway en http://localhost:8080.\n\n**Flujo recomendado de prueba:**\n1. Registrar un usuario (paciente o médico)\n2. Hacer login y copiar el token JWT\n3. Pegar el token en la variable `{{token}}` del entorno\n4. Usar el resto de endpoints con el header Authorization: Bearer {{token}}",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080",
+            "type": "string",
+            "description": "URL base del API Gateway"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string",
+            "description": "JWT obtenido tras hacer login. Se puede auto-rellenar usando el script del request Login."
+        }
+    ],
+    "item": [
+        {
+            "name": "🔐 Auth Service",
+            "description": "Autenticación y registro de usuarios. Base path: /api/auth",
+            "item": [
+                {
+                    "name": "Registrar Paciente",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"juan.perez\",\n  \"email\": \"juan.perez@example.com\",\n  \"password\": \"password123\",\n  \"role\": [\"paciente\"],\n  \"nombre\": \"Juan\",\n  \"apellido\": \"Pérez\",\n  \"numeroIdentificacion\": \"1234567890\",\n  \"fechaNacimiento\": \"1990-05-15\",\n  \"telefono\": \"3001234567\",\n  \"direccion\": \"Calle 123 # 45-67, Bogotá\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Registrar Médico",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "register"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"dra.garcia\",\n  \"email\": \"garcia@saludvital.com\",\n  \"password\": \"medico123\",\n  \"role\": [\"medico\"],\n  \"nombre\": \"María\",\n  \"apellido\": \"García\",\n  \"numeroIdentificacion\": \"9876543210\",\n  \"telefono\": \"3109876543\",\n  \"direccion\": \"Av. Salud # 10-20, Medellín\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "var jsonData = pm.response.json();",
+                                    "if (jsonData.token) {",
+                                    "    pm.collectionVariables.set('token', jsonData.token);",
+                                    "    console.log('Token JWT guardado automáticamente en la variable {{token}}');",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"username\": \"juan.perez\",\n  \"password\": \"password123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/auth/refresh",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "auth",
+                                "refresh"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "👨‍⚕️ Médicos Service",
+            "description": "CRUD de médicos. Base path: /api/medicos",
+            "item": [
+                {
+                    "name": "Listar todos los médicos",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicos"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Obtener médico por ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicos",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Verificar número de licencia",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicos/exists-licencia?numero=MED-001",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicos",
+                                "exists-licencia"
+                            ],
+                            "query": [
+                                {
+                                    "key": "numero",
+                                    "value": "MED-001"
+                                },
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "disabled": true,
+                                    "description": "Opcional: excluir el médico con este ID (para edición)"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear médico",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicos"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Rodríguez\",\n  \"numeroLicencia\": \"MED-001\",\n  \"telefono\": \"3001112233\",\n  \"email\": \"carlos.rodriguez@saludvital.com\",\n  \"especialidad\": \"CARDIOLOGIA\",\n  \"estado\": \"ACTIVO\",\n  \"disponible\": true,\n  \"tarifaConsulta\": 80000.00\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar médico",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicos",
+                                "1"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nombre\": \"Carlos\",\n  \"apellido\": \"Rodríguez\",\n  \"numeroLicencia\": \"MED-001\",\n  \"telefono\": \"3001112233\",\n  \"email\": \"carlos.rodriguez@saludvital.com\",\n  \"especialidad\": \"MEDICINA_INTERNA\",\n  \"estado\": \"ACTIVO\",\n  \"disponible\": false,\n  \"tarifaConsulta\": 90000.00\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar médico",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicos",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🧑‍🦱 Pacientes Service",
+            "description": "CRUD de pacientes. Base path: /api/pacientes",
+            "item": [
+                {
+                    "name": "Listar todos los pacientes",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/pacientes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "pacientes"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Obtener paciente por ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/pacientes/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "pacientes",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear paciente",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/pacientes",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "pacientes"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nombre\": \"Laura\",\n  \"apellido\": \"Martínez\",\n  \"numeroIdentificacion\": \"5555666677\",\n  \"fechaNacimiento\": \"1995-08-20\",\n  \"telefono\": \"3204445566\",\n  \"direccion\": \"Carrera 50 # 12-34, Cali\",\n  \"usuarioId\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar paciente",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/pacientes/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "pacientes",
+                                "1"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nombre\": \"Laura\",\n  \"apellido\": \"Martínez González\",\n  \"numeroIdentificacion\": \"5555666677\",\n  \"fechaNacimiento\": \"1995-08-20\",\n  \"telefono\": \"3204445566\",\n  \"direccion\": \"Av. Siempre Viva # 99-00, Cali\",\n  \"usuarioId\": 1\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar paciente",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/pacientes/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "pacientes",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "💊 Medicamentos Service",
+            "description": "CRUD de medicamentos. Base path: /api/medicamentos",
+            "item": [
+                {
+                    "name": "Listar todos los medicamentos",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicamentos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicamentos"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Medicamentos – Options (combo)",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicamentos/options",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicamentos",
+                                "options"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Obtener medicamento por ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicamentos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicamentos",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear medicamento",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicamentos",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicamentos"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nombre\": \"Ibuprofeno 400mg\",\n  \"descripcion\": \"Analgésico y antiinflamatorio no esteroideo. Dosis: 1 tableta cada 8 horas.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar medicamento",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicamentos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicamentos",
+                                "1"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"nombre\": \"Ibuprofeno 600mg\",\n  \"descripcion\": \"Analgésico y antiinflamatorio. Dosis revisada: 1 tableta cada 12 horas.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar medicamento",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/medicamentos/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "medicamentos",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "📅 Citas Service",
+            "description": "CRUD de citas médicas. Base path: /api/citas",
+            "item": [
+                {
+                    "name": "Listar todas las citas",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/citas",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "citas"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Obtener cita por ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/citas/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "citas",
+                                "1"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Crear cita",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/citas",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "citas"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"fecha\": \"2026-03-15\",\n  \"hora\": \"09:00:00\",\n  \"pacienteId\": 1,\n  \"medicoId\": 1,\n  \"motivo\": \"Consulta general por dolor de cabeza persistente\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Actualizar cita",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/citas/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "citas",
+                                "1"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"fecha\": \"2026-03-16\",\n  \"hora\": \"10:30:00\",\n  \"pacienteId\": 1,\n  \"medicoId\": 1,\n  \"motivo\": \"Seguimiento – dolor de cabeza (reprogramada)\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "Eliminar cita",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/citas/1",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "citas",
+                                "1"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🔔 Notificaciones Service",
+            "description": "Envío manual de notificaciones. Base path: /api/notificaciones",
+            "item": [
+                {
+                    "name": "Enviar notificación",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/api/notificaciones/enviar",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "notificaciones",
+                                "enviar"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"destinatario\": \"juan.perez@example.com\",\n  \"mensaje\": \"Su cita médica ha sido confirmada para el 15 de marzo a las 9:00 AM.\",\n  \"tipo\": \"EMAIL\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
